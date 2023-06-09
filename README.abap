@@ -1,7 +1,4 @@
-# Registros_de_voo.abap
-Projeto ABAP - Registros de voo
-
-REPORT zcurso_alura.
+# REPORT zrelatorio_de_voo.
 
 TYPES: BEGIN OF estrutura_relatorio,
          cia_aeria  TYPE s_carr_id,
@@ -15,7 +12,7 @@ CONSTANTS: posicao_preco_cabecalho TYPE i VALUE 36,
 
            posicao_n_voo_corpo     TYPE i VALUE 12,
            posicao_data_corpo      TYPE i VALUE 25,
-           Coluna type c VALUE '|'.
+           coluna                  TYPE c VALUE '|'.
 
 DATA: tabela_voo    TYPE STANDARD TABLE OF estrutura_relatorio,
       estrutura_voo LIKE LINE OF tabela_voo.
@@ -26,17 +23,17 @@ START-OF-SELECTION.
                   s_n_voo FOR estrutura_voo-numero_voo,
                   s_data  FOR estrutura_voo-data,
                   s_preco FOR estrutura_voo-preco.
-ULINE at (58) .
-NEW-LINE.
-FORMAT COLOR 4.
-  WRITE: Coluna, text-001, Coluna,
-         text-002,Coluna,
-         text-003,Coluna,
-         text-004, Coluna.
-new-LINE.
-ULINE at (58).
+  ULINE AT (59) .
+  NEW-LINE.
+  FORMAT COLOR 4.
+  WRITE: coluna, TEXT-001, coluna,
+         TEXT-002,coluna,
+         TEXT-003,coluna,
+         TEXT-004, coluna.
+  NEW-LINE.
+  ULINE AT (59).
 
-FORMAT COLOR OFF.
+  FORMAT COLOR OFF.
 
   SELECT carrid connid fldate price
      FROM sflight
@@ -45,6 +42,7 @@ FORMAT COLOR OFF.
         AND connid IN s_n_voo
         AND fldate IN s_data
         AND price IN s_preco.
+*  ORDER BY fldate DESCENDING.
 
   IF sy-subrc = 0.
 
@@ -60,34 +58,36 @@ FORMAT COLOR OFF.
 
   ELSE .
 
-  skip.
+    SKIP.
     MESSAGE 'Não foram encontrados nenhum resultado, favor realizar uma nova pesquisa!' TYPE 'I'.
     WRITE 'Não foram encontrados nenhum resultado, favor realizar uma nova pesquisa.'.
 
 
   ENDIF.
-  new-LINE.
-  ULINE At (189).
+  NEW-LINE.
+  ULINE AT (59).
   SKIP.
+  ULINE AT (191).
+  skip.
   WRITE 'Relatório gerado em:'.
   WRITE sy-datum.
 
 FORM escreve_nova_linha_no_corpo USING cia_aeria numero_voo data preco.
-new-LINE.
+  NEW-LINE.
 
-  WRITE: Coluna, (10) cia_aeria CENTERED,Coluna,
-           (15) numero_voo CENTERED,Coluna,
-           (12) data DD/MM/YYYY, Coluna,
-           (08) preco LEFT-JUSTIFIED, Coluna.
+  WRITE: coluna, (10) cia_aeria CENTERED,coluna,
+           (16) numero_voo CENTERED,coluna,
+           (12) data DD/MM/YYYY, coluna,
+           (08) preco LEFT-JUSTIFIED, coluna.
 ENDFORM.
 
 FORM msg_sucesso.
 
   DATA: numero_registro TYPE string,
-          msg             TYPE string.
+        msg             TYPE string.
 
-    numero_registro = sy-dbcnt .
-    CONCATENATE 'Sucesso! Encontrados:' numero_registro 'registro(s).' INTO msg SEPARATED BY space.
-FORMAT color 1.
-    MESSAGE msg TYPE 'S'.
-endform.
+  numero_registro = sy-dbcnt .
+  CONCATENATE 'Sucesso! Encontrados:' numero_registro 'registro(s).' INTO msg SEPARATED BY space.
+  FORMAT COLOR 1.
+  MESSAGE msg TYPE 'S'.
+ENDFORM.
